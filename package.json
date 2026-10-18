@@ -1,0 +1,113 @@
+{
+  "name": "dsh-plugin-pack",
+  "version": "0.1.0",
+  "description": "Community plugin packs for DeepSeek Harness: scan, select, export and import reproducible community-plugin combinations. · DSH 社区插件包：扫描、勾选、导出与导入可复现的社区插件组合。",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/dsh-plugin-pack.git"
+  },
+  "homepage": "https://github.com/your-org/dsh-plugin-pack#readme",
+  "bugs": {
+    "url": "https://github.com/your-org/dsh-plugin-pack/issues"
+  },
+  "keywords": [
+    "deepseek",
+    "harness",
+    "dsh",
+    "dsh-plugin",
+    "plugin-pack",
+    "community-plugins"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('lib',{recursive:true,force:true})\"",
+    "build": "tsc -p tsconfig.json && npm run build:client",
+    "build:client": "node scripts/build-client.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.client.json --noEmit",
+    "test": "vitest run",
+    "prepare": "npm run clean && npm run build"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.0",
+    "@deepseek-ai/dsh-plugin-manager": ">=0.2.0-alpha.0 <0.3.0",
+    "@deepseek-ai/dsh-sandbox": ">=0.2.0-alpha.0 <0.3.0",
+    "@deepseek-ai/dsh-sandbox-policy": ">=0.2.0-alpha.0 <0.3.0",
+    "@deepseek-ai/dsh-tools": ">=0.2.0-alpha.0 <0.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-sandbox": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-sandbox-policy": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.5",
+    "@deepseek-ai/dsh-app-boot": "0.2.1-alpha.5",
+    "@deepseek-ai/dsh-plugin-manager": "0.2.1-alpha.5",
+    "@deepseek-ai/dsh-sandbox": "0.2.1-alpha.5",
+    "@deepseek-ai/dsh-sandbox-policy": "0.2.1-alpha.5",
+    "@deepseek-ai/dsh-tools": "0.2.1-alpha.5",
+    "@deepseek-ai/dsh-user-approval": "0.2.1-alpha.5",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "esbuild": "^0.24.2",
+    "js-yaml": "^4.3.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ],
+      "platform": "web"
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./tools": {
+      "types": "./lib/tools.d.ts",
+      "default": "./lib/tools.js"
+    },
+    "./format": {
+      "types": "./lib/pack-format.d.ts",
+      "default": "./lib/pack-format.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./client": "./client/client.js",
+    "./schema/plugin-pack.schema.json": "./schema/plugin-pack.schema.json",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "dsh-pack": "./bin/dsh-pack.mjs"
+  },
+  "files": [
+    "lib",
+    "bin",
+    "client",
+    "docs",
+    "schema",
+    "cordis.patch.yml",
+    "LICENSE",
+    "README.md",
+    "README.zh.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

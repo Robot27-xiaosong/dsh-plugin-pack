@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/your-org/dsh-plugin-pack/raw/main/schema/plugin-pack.schema.json",
+  "title": "DSH Community Plugin Pack",
+  "description": "A shareable, reproducible combination of DSH community plugins. Contains only plugin names, versions and sources — never keys, sessions, memory or caches.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "format", "name", "createdAt", "generator", "plugins"],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "const": "dsh-plugin-pack"
+    },
+    "format": {
+      "type": "integer",
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "version"],
+      "properties": {
+        "tool": { "type": "string" },
+        "version": { "type": "string" }
+      }
+    },
+    "dsh": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "compatible": {
+          "type": "string",
+          "description": "DSH runtime version range this pack was tested against, optional."
+        }
+      }
+    },
+    "plugins": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/pluginEntry" }
+    }
+  },
+  "$defs": {
+    "pluginEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "source", "portable"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "portable": {
+          "type": "boolean",
+          "description": "Whether this entry can be reproduced on another machine. Local links and unpinned git refs are not portable."
+        },
+        "source": {
+          "oneOf": [
+            { "$ref": "#/$defs/npmSource" },
+            { "$ref": "#/$defs/gitSource" },
+            { "$ref": "#/$defs/tarballSource" },
+            { "$ref": "#/$defs/localSource" }
+          ]
+        }
+      }
+    },
+    "npmSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "spec"],
+      "properties": {
+        "type": { "type": "string", "const": "npm" },
+        "spec": {
+          "type": "string",
+          "description": "Exact install spec, e.g. name@1.2.3"
+        },
+        "registry": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "gitSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "url"],
+      "properties": {
+        "type": { "type": "string", "const": "git" },
+        "url": {
+          "type": "string",
+          "description": "Git repository URL without userinfo credentials."
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "40-character full commit SHA for reproducibility."
+        },
+        "path": {
+          "type": "string",
+          "description": "Subdirectory inside the repository containing the plugin."
+        }
+      }
+    },
+    "tarballSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "url"],
+      "properties": {
+        "type": { "type": "string", "const": "tarball" },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "localSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "const": "local" },
+        "fallbackSpec": {
+          "type": "string",
+          "description": "A best-effort name@version hint; the original local path is not portable."
+        }
+      }
+    }
+  }
+}

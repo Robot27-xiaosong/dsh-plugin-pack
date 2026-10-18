@@ -1,0 +1,10 @@
+# dsh-plugin-pack bundle patch: inserts the host service and the agent tool.
+# NOTE: no `disabled` gate — the service declares `static inject =
+# ['pluginManager', 'profileContext']`, so cordis activates it automatically
+# once those services exist. A boot-time disabled expression here is evaluated
+# before pluginManager is mounted and permanently skips the entry on 0.2.1.
+- insert:
+    - id: plugin-pack
+      name: 'dsh-plugin-pack'
+    - id: tool-plugin-pack
+      name: 'dsh-plugin-pack/tools'
